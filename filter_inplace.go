@@ -92,8 +92,8 @@ func FilterSimple(ptrSlice interface{}, funcs ...FilterFunc) {
 	}
 }
 
-// FilterSwap is slow and much safe version of Slice.
-func FilterSwap(ptrSlice interface{}, funcs ...FilterFunc) {
+// FilterSwapSimple is slow and much safe version of Slice.
+func FilterSwapSimple(ptrSlice interface{}, funcs ...FilterFunc) {
 	rv := reflect.ValueOf(ptrSlice)
 	if rv.Kind() != reflect.Ptr { // typeof ptrSlice != ptr
 		panic("not a pointer")
