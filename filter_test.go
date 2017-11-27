@@ -13,11 +13,11 @@ func ExampleFilter() {
 	strSlice := []string{"a", "bb", "ccc", "dddd"}
 	intSlice := []int{1, 2, 3, 4}
 
-	Filter(&strSlice, // a pointer to a slice
+	FilterSimpleFast(&strSlice, // a pointer to a slice
 		func(i int) bool { return len(strSlice[i]) >= 2 }, //          {"bb", "ccc", "dddd"}
 		func(i int) bool { return strSlice[i][0] <= 'c' }, // and {"a", "bb", "ccc"}
 	)
-	Filter(&intSlice, // a pointer to a slice
+	FilterSimpleFast(&intSlice, // a pointer to a slice
 		func(i int) bool { return intSlice[i]%2 == 0 }, // even
 	)
 
@@ -139,7 +139,7 @@ func TestTypesafe(t *testing.T) {
 	func() {
 		panicked = false
 		defer func() { recover(); panicked = true }()
-		Filter(&slice, func(i int) bool { return true })
+		FilterSimpleFast(&slice, func(i int) bool { return true })
 	}()
 	if !panicked {
 		t.Errorf("!?")
@@ -149,7 +149,7 @@ func TestTypesafe(t *testing.T) {
 	func() {
 		panicked = false
 		defer func() { recover(); panicked = true }()
-		Filter(&slice, func(i int) bool { return true })
+		FilterSimpleFast(&slice, func(i int) bool { return true })
 	}()
 	if !panicked {
 		t.Errorf("!?")
@@ -159,7 +159,7 @@ func TestTypesafe(t *testing.T) {
 	func() {
 		panicked = false
 		defer func() { recover(); panicked = true }()
-		Filter( /*not a ptr*/ slice, func(i int) bool { return true })
+		FilterSimpleFast( /*not a ptr*/ slice, func(i int) bool { return true })
 	}()
 	if !panicked {
 		t.Errorf("!?")
@@ -252,7 +252,7 @@ type bigStruct struct {
 	hogehoge [100]byte
 }
 
-func genbigStruct(n int) []bigStruct {
+func genBigStruct(n int) []bigStruct {
 	s := make([]bigStruct, n, n)
 	for i := 0; i < n; i++ {
 		s[i] = bigStruct{
