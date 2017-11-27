@@ -155,12 +155,12 @@ func FilterSwap(ptrSlice interface{}, funcs ...FilterFunc) {
 				allok = false
 			}
 		}
-		if ! /* NOT */ allok {
-			continue
+		if allok {
+			movelist[i] = okindex
+			okindex++
+		} else {
+			movelist[i] = -1
 		}
-
-		movelist[i] = okindex
-		okindex++
 	}
 
 	if okindex == length {
@@ -170,7 +170,9 @@ func FilterSwap(ptrSlice interface{}, funcs ...FilterFunc) {
 	swap := reflect.Swapper(rv.Elem().Interface())
 
 	for i, v := range movelist {
-		swap(i, v)
+		if v != -1 {
+			swap(i, v)
+		}
 	}
 
 	rv.Elem().SetLen(okindex)

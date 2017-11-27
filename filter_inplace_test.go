@@ -39,6 +39,38 @@ func TestInPlaceInt(t *testing.T) {
 		[]int{4, 2, 0})
 }
 
+func TestInPlaceIntSwap(t *testing.T) {
+	slice := []int{0}
+	FilterSwap(&slice, func(i int) bool { return slice[i]%2 == 0 })
+	gotwant.Test(t,
+		slice,
+		[]int{0})
+
+	slice = []int{1}
+	FilterSwap(&slice, func(i int) bool { return slice[i]%2 == 0 })
+	gotwant.Test(t,
+		slice,
+		[]int{})
+
+	slice = []int{0, 1, 2, 3, 4}
+	FilterSwap(&slice, func(i int) bool { return slice[i]%2 == 0 })
+	gotwant.Test(t,
+		slice,
+		[]int{0, 2, 4})
+
+	slice = []int{0, 1, 2, 3, 4, 5}
+	FilterSwap(&slice, func(i int) bool { return slice[i]%2 == 0 })
+	gotwant.Test(t,
+		slice,
+		[]int{0, 2, 4})
+
+	slice = []int{5, 4, 3, 2, 1, 0}
+	FilterSwap(&slice, func(i int) bool { return slice[i]%2 == 0 })
+	gotwant.Test(t,
+		slice,
+		[]int{4, 2, 0})
+}
+
 func TestStringInPlace(t *testing.T) {
 	slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
 	Filter(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
