@@ -24,11 +24,11 @@ func Map(slice interface{}, mapper func(i int) interface{}) interface{} {
 		if i == 0 {
 			dtyp := reflect.SliceOf(reflect.TypeOf(elem))
 
-			dv = reflect.New(dtyp)
-			dv.Elem().Set(reflect.MakeSlice(dtyp, length, length))
+			dv = reflect.New(dtyp)                                 // slice *[]xxx
+			dv.Elem().Set(reflect.MakeSlice(dtyp, length, length)) // *slice = make([]xxx, length)
 
 			//apend = MakeAppender(dv.Interface())
-			set = MakeSetter(dv.Elem().Interface())
+			set = MakeSetter(dv.Interface())
 		}
 		//apend(elem)
 		set(i, elem)

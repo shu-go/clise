@@ -195,119 +195,102 @@ func MakeCopier(srcSlice, destSlice interface{}) func(srcI, destI int) {
 	}
 }
 
-func MakeSetter(slice interface{}) func(i int, elem interface{}) {
-	v := reflect.ValueOf(slice)
-	if v.Kind() != reflect.Slice { // typeof srcSlice != []xxx
-		panic("src is not a slice")
+func MakeSetter(ptrSlice interface{}) func(i int, elem interface{}) {
+	v := reflect.ValueOf(ptrSlice)
+	if v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Slice { // typeof srcSlice != []xxx
+		panic("src is not a pointer to a slice")
 	}
-	sv := reflect.New(v.Type()) // var sv *[]xxx
-	sv.Elem().Set(v)            // *sv = srcSlice
 
-	/*
-		// sizeof switch (sizes of builtin types and upto 64 bytes)
-		switch v.Type().Elem().Size() { // sizeof((srcSlice)[0])
-		case 1:
-			s := *(*[]int8)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*int8)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 2:
-			s := *(*[]int16)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*int16)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 4:
-			s := *(*[]int32)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*int32)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 8:
-			s := *(*[]int64)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*int64)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 12:
-			s := *(*[][12]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[12]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 16:
-			s := *(*[][16]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[16]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 24:
-			s := *(*[][24]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[24]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 32:
-			s := *(*[][32]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[32]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 40:
-			s := *(*[][40]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[40]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 48:
-			s := *(*[][48]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[48]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 56:
-			s := *(*[][56]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[56]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
-		case 64:
-			s := *(*[][64]byte)(unsafe.Pointer(sv.Pointer()))
-			return func(i int, elem interface{}) {
-				w := &elem
-				wv := reflect.ValueOf(w)
-				e := *(*[64]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
-				s[i] = e
-			}
+	switch v.Type().Elem().Elem().Size() { // sizeof(*(ptrSlice)[0])
+	case 1:
+		s := (*[]int8)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int8)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
 		}
-	*/
+	case 2:
+		s := (*[]int16)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int16)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 4:
+		s := (*[]int32)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int32)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 8:
+		s := (*[]int64)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int64)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 12:
+		s := (*[][12]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[12]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 16:
+		s := (*[][16]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[16]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 24:
+		s := (*[][24]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[24]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 32:
+		s := (*[][32]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[32]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 40:
+		s := (*[][40]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[40]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 48:
+		s := (*[][48]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[48]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 56:
+		s := (*[][56]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[56]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	case 64:
+		s := (*[][64]byte)(unsafe.Pointer(v.Pointer()))
+		return func(i int, elem interface{}) {
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[64]byte)(unsafe.Pointer(iface[1]))
+			(*s)[i] = e
+		}
+	}
 
 	// fallback to reflect
 	return func(i int, elem interface{}) {
-		v.Index(i).Set(reflect.ValueOf(elem))
+		v.Elem().Index(i).Set(reflect.ValueOf(elem))
 	}
 }
 
