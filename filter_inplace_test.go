@@ -8,179 +8,184 @@ import (
 )
 
 func TestFilterInt(t *testing.T) {
-	slice := []int{0}
-	Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0})
+	t.Run("clise", func(t *testing.T) {
+		slice := []int{0}
+		Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
+		gotwant.Test(t,
+			slice,
+			[]int{0})
 
-	slice = []int{1}
-	Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{})
+		slice = []int{1}
+		Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
+		gotwant.Test(t,
+			slice,
+			[]int{})
 
-	slice = []int{0, 1, 2, 3, 4}
-	Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
+		slice = []int{0, 1, 2, 3, 4}
+		Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
+		gotwant.Test(t,
+			slice,
+			[]int{0, 2, 4})
 
-	slice = []int{0, 1, 2, 3, 4, 5}
-	Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
+		slice = []int{0, 1, 2, 3, 4, 5}
+		Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
+		gotwant.Test(t,
+			slice,
+			[]int{0, 2, 4})
 
-	slice = []int{5, 4, 3, 2, 1, 0}
-	Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{4, 2, 0})
+		slice = []int{5, 4, 3, 2, 1, 0}
+		Filter(&slice, func(i int) bool { return slice[i]%2 == 0 })
+		gotwant.Test(t,
+			slice,
+			[]int{4, 2, 0})
+	})
 }
 
 func TestFilterString(t *testing.T) {
-	slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
-	Filter(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
-	gotwant.Test(t, slice, []string{"bar", "baz"})
+	t.Run("clise", func(t *testing.T) {
+		slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
+		Filter(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
+		gotwant.Test(t, slice, []string{"bar", "baz"})
 
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	Filter(&slice, func(i int) bool { return len(slice[i]) == 4 })
-	gotwant.Test(t, slice, []string{"hoge", "piyo"})
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		Filter(&slice, func(i int) bool { return len(slice[i]) == 4 })
+		gotwant.Test(t, slice, []string{"hoge", "piyo"})
 
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	Filter(&slice,
-		func(i int) bool { return len(slice[i]) == 4 },
-		func(i int) bool { return strings.HasPrefix(slice[i], "b") },
-	)
-	gotwant.Test(t, slice, []string{})
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		Filter(&slice,
+			func(i int) bool { return len(slice[i]) == 4 },
+			func(i int) bool { return strings.HasPrefix(slice[i], "b") },
+		)
+		gotwant.Test(t, slice, []string{})
 
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	Filter(&slice,
-		func(i int) bool { return len(slice[i]) == 4 },
-		func(i int) bool { return strings.HasPrefix(slice[i], "p") },
-	)
-	gotwant.Test(t, slice, []string{"piyo"})
-}
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		Filter(&slice,
+			func(i int) bool { return len(slice[i]) == 4 },
+			func(i int) bool { return strings.HasPrefix(slice[i], "p") },
+		)
+		gotwant.Test(t, slice, []string{"piyo"})
+	})
+	t.Run("goway", func(t *testing.T) {
+		slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
+		filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
+		gotwant.Test(t, slice, []string{"bar", "baz"})
 
-func TestFilterGoWayString(t *testing.T) {
-	slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
-	filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
-	gotwant.Test(t, slice, []string{"bar", "baz"})
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
+		gotwant.Test(t, slice, []string{"hoge", "piyo"})
 
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
-	gotwant.Test(t, slice, []string{"hoge", "piyo"})
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
+		filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
+		gotwant.Test(t, slice, []string{})
 
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
-	filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
-	gotwant.Test(t, slice, []string{})
-
-	slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
-	filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
-	filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "p") })
-	gotwant.Test(t, slice, []string{"piyo"})
+		slice = []string{"hoge", "piyo", "foo", "bar", "baz"}
+		filterInPlaceString(&slice, func(i int) bool { return len(slice[i]) == 4 })
+		filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "p") })
+		gotwant.Test(t, slice, []string{"piyo"})
+	})
 }
 
 func BenchmarkFilterInt(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+	b.Run("clise", func(b *testing.B) {
+		orig := genIntSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]int, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		Filter(&slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
-}
+			Filter(&slice, func(i int) bool {
+				return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
+			})
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genIntSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]int, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-func BenchmarkFilterGoWayInt(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+			filterInPlaceInt(&slice, func(i int) bool {
+				return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
+			})
+		}
+	})
+	b.Run("goway2", func(b *testing.B) {
+		orig := genIntSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]int, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		filterInPlaceInt(&slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
-}
-
-func BenchmarkFilterGoWay2Int(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterInPlaceInt2(&slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
+			filterInPlaceInt2(&slice, func(i int) bool {
+				return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
+			})
+		}
+	})
 }
 
 func BenchmarkFilterMyStruct(b *testing.B) {
-	orig := genMyStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]myStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+	b.Run("clise", func(b *testing.B) {
+		orig := genMyStruct(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]myStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		Filter(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
+			Filter(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genMyStruct(sliceSize)
 
-func BenchmarkFilterGoWay2MyStruct(b *testing.B) {
-	orig := genMyStruct(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]myStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]myStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterInPlaceMyStruct2(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
+			filterInPlaceMyStruct2(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
 }
 
 func BenchmarkFilterGoWayBigStruct(b *testing.B) {
-	orig := genBigStruct(sliceSize)
+	b.Run("clise", func(b *testing.B) {
+		orig := genBigStruct(sliceSize)
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]bigStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]bigStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		filterInPlaceBigStruct(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
+			filterInPlaceBigStruct(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genBigStruct(sliceSize)
 
-func BenchmarkFilterGoWay2BigStruct(b *testing.B) {
-	orig := genBigStruct(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]bigStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]bigStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterInPlaceBigStruct2(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
+			filterInPlaceBigStruct2(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
 }
 
 func filterInPlaceInt(ptrslice *[]int, funcs ...func(i int) bool) {

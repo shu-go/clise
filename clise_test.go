@@ -117,29 +117,30 @@ func TestMakeCopier(t *testing.T) {
 }
 
 func BenchmarkCopyOp(b *testing.B) {
-	src := []string{"aaaaa", "bbbbb", "ccccc"}
-	dest := make([]string, len(src))
+	b.Run("clise", func(b *testing.B) {
+		src := []string{"aaaaa", "bbbbb", "ccccc"}
+		dest := make([]string, len(src))
 
-	copy := MakeCopier(src, dest)
+		copy := MakeCopier(src, dest)
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		srcI := b.N % len(src)
-		destI := b.N % len(dest)
-		copy(srcI, destI)
-	}
-}
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			srcI := b.N % len(src)
+			destI := b.N % len(dest)
+			copy(srcI, destI)
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		src := []string{"aaaaa", "bbbbb", "ccccc"}
+		dest := make([]string, len(src))
 
-func BenchmarkCopyOpGoWay(b *testing.B) {
-	src := []string{"aaaaa", "bbbbb", "ccccc"}
-	dest := make([]string, len(src))
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		srcI := b.N % len(src)
-		destI := b.N % len(dest)
-		dest[destI] = src[srcI]
-	}
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			srcI := b.N % len(src)
+			destI := b.N % len(dest)
+			dest[destI] = src[srcI]
+		}
+	})
 }
 
 func TestMakeRemover(t *testing.T) {
@@ -208,47 +209,49 @@ func TestMakeRemover(t *testing.T) {
 }
 
 func BenchmarkRemoveOp(b *testing.B) {
-	b.ResetTimer()
-	//for i := 0; i < 10000; /*b.N*/ i++ {
-	for i := 0; i < b.N; i++ {
-		slice := genStringSeq(1000) //[]string{"aaaaa", "bbbbb", "ccccc"}
-		remove := MakeRemover(&slice)
+	b.Run("clise", func(b *testing.B) {
+		b.ResetTimer()
+		//for i := 0; i < 10000; /*b.N*/ i++ {
+		for i := 0; i < b.N; i++ {
+			slice := genStringSeq(1000) //[]string{"aaaaa", "bbbbb", "ccccc"}
+			remove := MakeRemover(&slice)
 
-		i := b.N % len(slice)
-		remove(i, i)
-	}
-}
+			i := b.N % len(slice)
+			remove(i, i)
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		b.ResetTimer()
+		//for i := 0; i < 10000; /*b.N*/ i++ {
+		for i := 0; i < b.N; i++ {
+			slice := genStringSeq(1000) //[]string{"aaaaa", "bbbbb", "ccccc"}
+			//remove := MakeRemover(&slice)
 
-func BenchmarkRemoveOpGoWay(b *testing.B) {
-	b.ResetTimer()
-	//for i := 0; i < 10000; /*b.N*/ i++ {
-	for i := 0; i < b.N; i++ {
-		slice := genStringSeq(1000) //[]string{"aaaaa", "bbbbb", "ccccc"}
-		//remove := MakeRemover(&slice)
-
-		i := b.N % len(slice)
-		slice = append(slice[:i], slice[i+1:]...)
-	}
+			i := b.N % len(slice)
+			slice = append(slice[:i], slice[i+1:]...)
+		}
+	})
 }
 
 func BenchmarkAppendOp(b *testing.B) {
-	b.ResetTimer()
-	//for i := 0; i < 10000; /*b.N*/ i++ {
-	for i := 0; i < b.N; i++ {
-		slice := []string{}
-		apend := MakeAppender(&slice)
+	b.Run("clise", func(b *testing.B) {
+		b.ResetTimer()
+		//for i := 0; i < 10000; /*b.N*/ i++ {
+		for i := 0; i < b.N; i++ {
+			slice := []string{}
+			apend := MakeAppender(&slice)
 
-		apend("aaaa")
-	}
-}
+			apend("aaaa")
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		b.ResetTimer()
+		//for i := 0; i < 10000; /*b.N*/ i++ {
+		for i := 0; i < b.N; i++ {
+			slice := []string{}
+			//apend := MakeAppender(&slice)
 
-func BenchmarkAppendOpGoWay(b *testing.B) {
-	b.ResetTimer()
-	//for i := 0; i < 10000; /*b.N*/ i++ {
-	for i := 0; i < b.N; i++ {
-		slice := []string{}
-		//apend := MakeAppender(&slice)
-
-		slice = append(slice, "aaaa")
-	}
+			slice = append(slice, "aaaa")
+		}
+	})
 }

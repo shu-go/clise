@@ -67,23 +67,24 @@ func TestBisect(t *testing.T) {
 }
 
 func BenchmarkBisect(b *testing.B) {
-	slice := genStringSeq(1000)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		Bisect(slice, func(i int) int {
-			return strings.Compare("820", slice[i])
-		})
-	}
-}
-
-func BenchmarkNoBisect(b *testing.B) {
-	slice := genStringSeq(1000)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		for _, v := range slice {
-			if strings.Compare(v, "820") == 0 {
-				break
+	b.Run("clise", func(b *testing.B) {
+		slice := genStringSeq(1000)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			Bisect(slice, func(i int) int {
+				return strings.Compare("820", slice[i])
+			})
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		slice := genStringSeq(1000)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			for _, v := range slice {
+				if strings.Compare(v, "820") == 0 {
+					break
+				}
 			}
 		}
-	}
+	})
 }

@@ -95,86 +95,89 @@ func TestCopyFilteredString(t *testing.T) {
 }
 
 func BenchmarkCopyFiltered(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+	b.Run("clise", func(b *testing.B) {
+		orig := genIntSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]int, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		a := CopyFiltered(slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		}).([]int)
-		a[0] = a[0]
-	}
-}
+			a := CopyFiltered(slice, func(i int) bool {
+				return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
+			}).([]int)
+			a[0] = a[0]
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genIntSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]int, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-func BenchmarkCopyGoWay(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterCopyInt(slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
+			filterCopyInt(slice, func(i int) bool {
+				return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
+			})
+		}
+	})
 }
 
 func BenchmarkCopyFilteredString(b *testing.B) {
-	orig := genStringSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]string, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+	b.Run("clise", func(b *testing.B) {
+		orig := genStringSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]string, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		CopyFiltered(slice, func(i int) bool { return strings.Contains(slice[i], "1") })
-	}
-}
+			CopyFiltered(slice, func(i int) bool { return strings.Contains(slice[i], "1") })
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genStringSeq(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]string, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-func BenchmarkCopyGoWayString(b *testing.B) {
-	orig := genStringSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]string, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterCopyString(slice, func(i int) bool { return strings.Contains(slice[i], "1") })
-	}
+			filterCopyString(slice, func(i int) bool { return strings.Contains(slice[i], "1") })
+		}
+	})
 }
 
 func BenchmarkCopyFilteredMyStruct(b *testing.B) {
-	orig := genMyStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]myStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
+	b.Run("clise", func(b *testing.B) {
+		orig := genMyStruct(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]myStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-		CopyFiltered(slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
+			CopyFiltered(slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
+	b.Run("goway", func(b *testing.B) {
+		orig := genMyStruct(sliceSize)
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			stopTimer(b)
+			slice := make([]myStruct, len(orig))
+			copy(slice, orig)
+			startTimer(b)
 
-func BenchmarkCopyGoWayMyStruct(b *testing.B) {
-	orig := genMyStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]myStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		filterCopyMyStruct(slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
+			filterCopyMyStruct(slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
+		}
+	})
 }
 
 func filterCopyInt(slice []int, funcs ...func(i int) bool) []int {
