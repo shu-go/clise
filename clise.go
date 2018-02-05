@@ -311,103 +311,85 @@ func MakeAppender(ptrSlice interface{}) func(elem interface{}) {
 	case 1:
 		s := (*[]int8)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			/*
-				ev := reflect.ValueOf(elem)
-				pv := reflect.New(ev.Type()) // var pv *xxx
-				pv.Elem().Set(ev)            // *pv = elem
-				e := *(*int8)(unsafe.Pointer(pv.Pointer()))
-			*/
-			w := &elem // *interface{}  not a pointer to the type referred by elem
-			wv := reflect.ValueOf(w)
-			e := *(*int8)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int8)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 2:
 		s := (*[]int16)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*int16)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int16)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 4:
 		s := (*[]int32)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*int32)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int32)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 8:
 		s := (*[]int64)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*int64)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*int64)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 12:
 		s := (*[][12]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[12]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[12]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 16:
 		s := (*[][16]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[16]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[16]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 24:
 		s := (*[][24]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[24]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[24]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 32:
 		s := (*[][32]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[32]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[32]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 40:
 		s := (*[][40]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[40]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[40]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 48:
 		s := (*[][48]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[48]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[48]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 56:
 		s := (*[][56]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[56]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[56]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	case 64:
 		s := (*[][64]byte)(unsafe.Pointer(v.Pointer()))
 		return func(elem interface{}) {
-			w := &elem
-			wv := reflect.ValueOf(w)
-			e := *(*[64]byte)(unsafe.Pointer(wv.Elem().InterfaceData()[1]))
+			iface := *(*[2]uintptr)(unsafe.Pointer(&elem))
+			e := *(*[64]byte)(unsafe.Pointer(iface[1]))
 			*s = append(*s, e)
 		}
 	}
