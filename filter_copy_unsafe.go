@@ -1,4 +1,4 @@
-// +build !unsafe
+// +build unsafe
 
 package clise
 
@@ -25,9 +25,32 @@ func CopyFiltered(slice interface{}, funcs ...FilterFunc) interface{} {
 		reflect.MakeSlice(rv.Type(), length, length)) // copy is done by dest[j] = src[i], so it's allocated in advance
 	filtered := ptrfiltered.Elem()
 
-	reflect.Copy(filtered, rv)
+	//copy := MakeCopier(slice, ptrfiltered.Elem())
+	copy := MakeCopier(slice, ptrfiltered.Elem().Interface())
 
-	Filter(ptrfiltered.Interface(), funcs...)
+	copiedLen := 0
+
+	for i := 0; i < length; i++ {
+		allok := true
+		for _, f := range funcs {
+			if !f(i) {
+				allok = false
+			}
+		}
+		if !allok {
+			continue
+		}
+
+		// copy
+
+		//filtered.Set(reflect.Append(filtered, rv.Index(i)))
+		//filtered.Index(copiedLen).Set(rv.Index(i))
+		copy(i, copiedLen)
+		copiedLen++
+	}
+
+	// set actual length of filtered
+	filtered.SetLen(copiedLen)
 
 	return filtered.Interface()
 }

@@ -1,3 +1,5 @@
+// +build unsafe
+
 // Package clise provides EXPERIMENTAL generic slice functions.
 package clise
 

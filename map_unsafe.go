@@ -1,3 +1,5 @@
+// +build unsafe
+
 package clise
 
 import (

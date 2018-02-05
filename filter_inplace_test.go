@@ -63,70 +63,6 @@ func TestFilterString(t *testing.T) {
 	gotwant.Test(t, slice, []string{"piyo"})
 }
 
-func TestFilterSimpleInt(t *testing.T) {
-	slice := []int{0}
-	FilterSimple(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0})
-
-	slice = []int{1}
-	FilterSimple(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{})
-
-	slice = []int{0, 1, 2, 3, 4}
-	FilterSimple(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
-
-	slice = []int{0, 1, 2, 3, 4, 5}
-	FilterSimple(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
-
-	slice = []int{5, 4, 3, 2, 1, 0}
-	FilterSimple(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{4, 2, 0})
-}
-
-func TestFilterSimpleFastInt(t *testing.T) {
-	slice := []int{0}
-	FilterSimpleFast(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0})
-
-	slice = []int{1}
-	FilterSimpleFast(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{})
-
-	slice = []int{0, 1, 2, 3, 4}
-	FilterSimpleFast(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
-
-	slice = []int{0, 1, 2, 3, 4, 5}
-	FilterSimpleFast(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{0, 2, 4})
-
-	slice = []int{5, 4, 3, 2, 1, 0}
-	FilterSimpleFast(&slice, func(i int) bool { return slice[i]%2 == 0 })
-	gotwant.Test(t,
-		slice,
-		[]int{4, 2, 0})
-}
-
 func TestFilterGoWayString(t *testing.T) {
 	slice := []string{"hoge", "piyo", "foo", "bar", "baz"}
 	filterInPlaceString(&slice, func(i int) bool { return strings.HasPrefix(slice[i], "b") })
@@ -157,36 +93,6 @@ func BenchmarkFilterInt(b *testing.B) {
 		startTimer(b)
 
 		Filter(&slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
-}
-
-func BenchmarkFilterSimpleInt(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		FilterSimple(&slice, func(i int) bool {
-			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
-		})
-	}
-}
-
-func BenchmarkFilterSimpleFastInt(b *testing.B) {
-	orig := genIntSeq(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]int, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		FilterSimpleFast(&slice, func(i int) bool {
 			return slice[i]%10000/1000 == 1 || slice[i]%1000/100 == 1 || slice[i]%100/10 == 1 || slice[i]%10 == 1
 		})
 	}
@@ -235,19 +141,6 @@ func BenchmarkFilterMyStruct(b *testing.B) {
 	}
 }
 
-func BenchmarkFilterSimpleFastMyStruct(b *testing.B) {
-	orig := genMyStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]myStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		FilterSimpleFast(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
-
 func BenchmarkFilterGoWay2MyStruct(b *testing.B) {
 	orig := genMyStruct(sliceSize)
 
@@ -259,32 +152,6 @@ func BenchmarkFilterGoWay2MyStruct(b *testing.B) {
 		startTimer(b)
 
 		filterInPlaceMyStruct2(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
-
-func BenchmarkFilterBigStruct(b *testing.B) {
-	orig := genBigStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]bigStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		FilterSimpleFast(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
-	}
-}
-
-func BenchmarkFilterSimpleFastBigStruct(b *testing.B) {
-	orig := genBigStruct(sliceSize)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		stopTimer(b)
-		slice := make([]bigStruct, len(orig))
-		copy(slice, orig)
-		startTimer(b)
-
-		FilterSimpleFast(&slice, func(i int) bool { return strings.Contains(slice[i].name, "1") })
 	}
 }
 
