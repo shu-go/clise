@@ -1,8 +1,6 @@
 package clise
 
 import (
-	//"fmt"
-	//"os"
 	"reflect"
 )
 
