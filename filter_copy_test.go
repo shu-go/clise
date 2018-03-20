@@ -40,9 +40,9 @@ func ExampleCopySliceInGoWay() {
 
 func TestCopyFilteredInt(t *testing.T) {
 	slice := []int{}
-	if nil != CopyFiltered(slice, func(i int) bool { return slice[i]%2 == 0 }) {
-		t.Errorf("not nil")
-	}
+	gotwant.Test(t,
+		CopyFiltered(slice, func(i int) bool { return slice[i]%2 == 0 }).([]int),
+		[]int{})
 
 	slice = []int{0}
 	gotwant.Test(t,
