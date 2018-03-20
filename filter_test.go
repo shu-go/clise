@@ -15,8 +15,8 @@ const (
 )
 
 var (
-	stopTimer  func(*testing.B) = func(*testing.B) {}
-	startTimer func(*testing.B) = func(*testing.B) {}
+	stopTimer  = func(*testing.B) {}
+	startTimer = func(*testing.B) {}
 )
 
 func init() {
@@ -122,24 +122,8 @@ func BenchmarkMakeMyStruct(b *testing.B) {
 	}
 }
 
-func genInt8Seq(n int) []int8 {
-	s := make([]int8, n, n)
-	for i := 0; i < n; i++ {
-		s[i] = int8(i % 256)
-	}
-	return s
-}
-
-func genInt64Seq(n int) []int64 {
-	s := make([]int64, n, n)
-	for i := 0; i < n; i++ {
-		s[i] = int64(i)
-	}
-	return s
-}
-
 func genIntSeq(n int) []int {
-	s := make([]int, n, n)
+	s := make([]int, n)
 	for i := 0; i < n; i++ {
 		s[i] = i
 	}
@@ -147,7 +131,7 @@ func genIntSeq(n int) []int {
 }
 
 func genStringSeq(n int) []string {
-	s := make([]string, n, n)
+	s := make([]string, n)
 	for i := 0; i < n; i++ {
 		s[i] = fmt.Sprintf("%d", i)
 	}
@@ -161,7 +145,7 @@ type myStruct struct {
 }
 
 func genMyStruct(n int) []myStruct {
-	s := make([]myStruct, n, n)
+	s := make([]myStruct, n)
 	for i := 0; i < n; i++ {
 		s[i] = myStruct{
 			name:   strconv.Itoa(i),
@@ -180,7 +164,7 @@ type bigStruct struct {
 }
 
 func genBigStruct(n int) []bigStruct {
-	s := make([]bigStruct, n, n)
+	s := make([]bigStruct, n)
 	for i := 0; i < n; i++ {
 		s[i] = bigStruct{
 			name: strconv.Itoa(i),

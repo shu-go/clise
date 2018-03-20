@@ -33,10 +33,10 @@ func Bisect(slice interface{}, cmp func(i int) (dir int)) int {
 		}
 
 		if dir < 0 {
-			p -= 1
+			p--
 			l, p, r = l, (l+p)/2, p
 		} else {
-			p += 1
+			p++
 			l, p, r = p, (p+r)/2, r
 		}
 	}

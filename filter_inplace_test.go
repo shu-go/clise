@@ -249,51 +249,6 @@ func filterInPlaceInt2(ptrslice *[]int, funcs ...func(i int) bool) {
 	}
 }
 
-func filterInPlaceString2(ptrslice *[]string, funcs ...func(i int) bool) {
-	length := len(*ptrslice)
-
-	rmlength := length / 2
-	if rmlength == 0 {
-		rmlength = length
-	}
-	rmlist := make([]int, 0, rmlength)
-	// mark in asc order
-	for i := 0; i < length; i++ {
-		allok := true
-		for _, f := range funcs {
-			if !f(i) {
-				allok = false
-			}
-		}
-		if allok {
-			continue
-		}
-		rmlist = append(rmlist, i)
-	}
-
-	// comact traversing in desc order
-	lastS, lastE := -1, -1
-	for i := len(rmlist) - 1; i >= 0; i-- {
-		if lastE == -1 {
-			lastS, lastE = rmlist[i], rmlist[i]
-			continue
-		}
-		if rmlist[i] == lastS-1 {
-			lastS = rmlist[i]
-			continue
-		}
-
-		//remove(lastS, lastE)
-		*ptrslice = append((*ptrslice)[:lastS], (*ptrslice)[lastE+1:]...)
-
-		lastS, lastE = rmlist[i], rmlist[i]
-	}
-	if lastE != -1 {
-		//remove(lastS, lastE)
-		*ptrslice = append((*ptrslice)[:lastS], (*ptrslice)[lastE+1:]...)
-	}
-}
-
 func filterInPlaceMyStruct2(ptrslice *[]myStruct, funcs ...func(i int) bool) {
 	length := len(*ptrslice)
 
@@ -385,22 +340,6 @@ func filterInPlaceBigStruct2(ptrslice *[]bigStruct, funcs ...func(i int) bool) {
 }
 
 func filterInPlaceString(ptrslice *[]string, funcs ...func(i int) bool) {
-	for i := len(*ptrslice) - 1; i >= 0; i-- {
-		allok := true
-		for _, f := range funcs {
-			if !f(i) {
-				allok = false
-			}
-		}
-		if allok {
-			continue
-		}
-
-		*ptrslice = append((*ptrslice)[:i], (*ptrslice)[i+1:]...)
-	}
-}
-
-func filterInPlaceMyStruct(ptrslice *[]myStruct, funcs ...func(i int) bool) {
 	for i := len(*ptrslice) - 1; i >= 0; i-- {
 		allok := true
 		for _, f := range funcs {
