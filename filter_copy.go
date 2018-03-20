@@ -15,9 +15,6 @@ func CopyFiltered(slice interface{}, funcs ...FilterFunc) interface{} {
 	}
 
 	length := rv.Len()
-	if length == 0 {
-		return nil
-	}
 
 	ptrfiltered := reflect.New(rv.Type())
 	ptrfiltered.Elem().Set(
