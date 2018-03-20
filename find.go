@@ -19,6 +19,10 @@ func Find(slice interface{}, dest interface{}, funcs ...FilterFunc) bool {
 		panic("type not match")
 	}
 
+	if !dv.Elem().CanSet() {
+		panic("dest is not CanSet, pass dest like &someValue")
+	}
+
 	length := rv.Len()
 
 	for i := 0; i < length; i++ {
