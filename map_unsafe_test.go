@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"bitbucket.org/shu/gotwant"
+	"bitbucket.org/shu_go/gotwant"
 )
 
 func TestMap(t *testing.T) {

@@ -3,7 +3,7 @@ package clise
 import (
 	"testing"
 
-	"bitbucket.org/shu/gotwant"
+	"bitbucket.org/shu_go/gotwant"
 )
 
 func TestReverse(t *testing.T) {
