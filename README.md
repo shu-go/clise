@@ -1,1 +1,1 @@
-https://godoc.org/bitbucket.org/shu/clise
+https://godoc.org/github.com/shu-go/clise
